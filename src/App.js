@@ -6,7 +6,7 @@ import Layout from './components/Layout/Layout';
 import Products from './components/Shop/Products';
 import Notification from './components/UI/Notification';
 
-import { sendCartDataCustomActionCreator } from './store/cart-slice';
+import { sendCartDataCustomActionCreator, fetchCartData } from './store/cartCustomActionCreators';
 
 let isInitial = true; // this is very important ... outside of component
 
@@ -16,15 +16,20 @@ function App() {
   const cart = useSelector((state) => state.cart); //cart items from redux store
   const notification = useSelector((state) => state.ui.notification);
 
+  useEffect(()=>{
+    dispatch(fetchCartData());
+  },[dispatch]);
+
   useEffect(() => {
-    
 
     if (isInitial) {
       isInitial = false;
       return;
     }
 
-    dispatch(sendCartDataCustomActionCreator(cart));
+    if(cart.isChanged){
+      dispatch(sendCartDataCustomActionCreator(cart));
+    }
 
 
   }, [cart, dispatch]);
